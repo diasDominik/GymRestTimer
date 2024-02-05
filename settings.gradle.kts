@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 rootProject.name = "Gym Rest Timer"
 include(":mobile")
 include(":wear")
+include(":database")
