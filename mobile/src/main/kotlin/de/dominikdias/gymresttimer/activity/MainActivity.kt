@@ -12,17 +12,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import de.dominikdias.database.viewmodel.DatabaseViewModel
+import de.dominikdias.gymresttimer.application.GymRestTimerApplication
 import de.dominikdias.gymresttimer.viewmodel.MainActivityViewModel
 import de.dominikdias.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel by viewModels<MainActivityViewModel>()
+        val mainActivityViewModel by viewModels<MainActivityViewModel>()
+        val databaseViewModel by viewModels<DatabaseViewModel> { DatabaseViewModel.factory(
+            (application as GymRestTimerApplication).durationRepository) }
         setContent {
             MyApplicationTheme {
+                val durationList by databaseViewModel.durationList.collectAsState()
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -30,11 +37,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     LazyColumn {
                         item {
-                            Text(text = viewModel.timerText)
+                            Text(text = mainActivityViewModel.timerText)
                         }
-                        items(viewModel.timerList) {
-                            Button(onClick = { viewModel.startTimer(it) }) {
-                                Text(text = (it.inWholeMilliseconds / 1000).toString())
+                        items(durationList) {
+                            Button(onClick = { mainActivityViewModel.startTimer(it.duration) }) {
+                                Text(text = (it.duration / 1000).toString())
                             }
                         }
                     }

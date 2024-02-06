@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class DurationViewModel(private val durationRepository: DurationRepository): ViewModel() {
+class DatabaseViewModel(private val durationRepository: DurationRepository): ViewModel() {
 
     private var _durationList = MutableStateFlow<List<DurationEntry>>(emptyList())
     val durationList = _durationList.asStateFlow()
@@ -34,7 +34,7 @@ class DurationViewModel(private val durationRepository: DurationRepository): Vie
     companion object {
         fun factory(durationRepository: DurationRepository): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                DurationViewModel(durationRepository = durationRepository)
+                DatabaseViewModel(durationRepository = durationRepository)
             }
         }
     }
