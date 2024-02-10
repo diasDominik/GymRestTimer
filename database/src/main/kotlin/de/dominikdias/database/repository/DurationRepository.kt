@@ -1,18 +1,26 @@
 package de.dominikdias.database.repository
 
 import de.dominikdias.database.dao.DurationDao
-import de.dominikdias.database.data.DurationEntry
+import de.dominikdias.database.data.Duration
+import de.dominikdias.database.data.toDuration
+import de.dominikdias.database.data.toDurationEntry
+import de.dominikdias.database.interfaces.DurationRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 
-class DurationRepository(private val durationDao: DurationDao) {
-    suspend fun insertDuration(duration: DurationEntry) = withContext(Dispatchers.IO) {
-        durationDao.insert(duration = duration)
+internal class DurationRepository(private val durationDao: DurationDao): DurationRepositoryImpl {
+    override suspend fun insertDuration(duration: Duration) = withContext(Dispatchers.IO) {
+        durationDao.insert(duration = duration.toDurationEntry())
     }
 
-    suspend fun getAllDurations(): Flow<List<DurationEntry>> = withContext(Dispatchers.IO) {
-        return@withContext durationDao.getAllDurations()
+    override suspend fun getAllDurations(): Flow<List<Duration>> = withContext(Dispatchers.IO) {
+        return@withContext durationDao.getAllDurations().map { durationEntryList ->
+            durationEntryList.map { durationEntry ->
+                durationEntry.toDuration()
+            }
+        }
     }
 }

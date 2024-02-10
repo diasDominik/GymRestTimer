@@ -7,7 +7,7 @@ import de.dominikdias.database.data.DurationEntry
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface DurationDao {
+internal interface DurationDao {
     @Upsert
     suspend fun insert(duration: DurationEntry)
 

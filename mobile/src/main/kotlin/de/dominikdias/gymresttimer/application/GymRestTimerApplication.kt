@@ -1,9 +1,8 @@
 package de.dominikdias.gymresttimer.application
 
 import android.app.Application
-import de.dominikdias.database.DurationDatabase
-import de.dominikdias.database.repository.DurationRepository
+import de.dominikdias.database.factory.DurationRepositoryProvider
 
 class GymRestTimerApplication: Application() {
-    val durationRepository by lazy { DurationRepository(DurationDatabase.getDatabase(this).durationDao()) }
+    val durationRepository by lazy { DurationRepositoryProvider.provideDatabaseRepository(this) }
 }

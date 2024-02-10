@@ -9,7 +9,7 @@ import de.dominikdias.database.dao.DurationDao
 import de.dominikdias.database.data.DurationEntry
 
 @Database(entities = [DurationEntry::class], version = 1)
-abstract class DurationDatabase : RoomDatabase() {
+internal abstract class DurationDatabase : RoomDatabase() {
 
     abstract fun durationDao(): DurationDao
 
