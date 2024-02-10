@@ -6,13 +6,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import de.dominikdias.database.data.Duration
-import de.dominikdias.database.interfaces.DurationRepositoryImpl
+import de.dominikdias.database.interfaces.IDurationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class DatabaseViewModel(private val durationRepository: DurationRepositoryImpl): ViewModel() {
+class DatabaseViewModel(private val durationRepository: IDurationRepository): ViewModel() {
 
     private var _durationList = MutableStateFlow<List<Duration>>(emptyList())
     val durationList = _durationList.asStateFlow()
@@ -32,7 +32,7 @@ class DatabaseViewModel(private val durationRepository: DurationRepositoryImpl):
     }
 
     companion object {
-        fun factory(durationRepository: DurationRepositoryImpl): ViewModelProvider.Factory = viewModelFactory {
+        fun factory(durationRepository: IDurationRepository): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 DatabaseViewModel(durationRepository = durationRepository)
             }
