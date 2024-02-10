@@ -5,20 +5,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import de.dominikdias.gymresttimer.data.ScreenNavigation
 
-class MainActivityViewModel: ViewModel() {
+class MainActivityViewModel : ViewModel() {
+
+    var timerText by mutableStateOf("")
+        private set
+
+    var currentRoute by mutableStateOf<ScreenNavigation>(ScreenNavigation.Home)
 
     private var timer: CountDownTimer? = null
 
     private var chosenTime: Long = 0
 
-    var timerText by mutableStateOf("")
-        private set
-
     fun startTimer(time: Long) {
         timer?.cancel()
         chosenTime = time
-        timer = object: CountDownTimer(chosenTime, 1000) {
+        timer = object : CountDownTimer(chosenTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 timerText = (millisUntilFinished / 1000).toString()
             }

@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.navigation.compose)
     implementation(project(":database"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

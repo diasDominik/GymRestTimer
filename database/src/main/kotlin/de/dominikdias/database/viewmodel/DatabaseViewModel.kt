@@ -1,5 +1,6 @@
 package de.dominikdias.database.viewmodel
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -15,6 +16,8 @@ import kotlinx.coroutines.launch
 class DatabaseViewModel(private val durationRepository: IDurationRepository): ViewModel() {
 
     private var _durationList = MutableStateFlow<List<Duration>>(emptyList())
+
+    @Stable
     val durationList = _durationList.asStateFlow()
 
     init {
