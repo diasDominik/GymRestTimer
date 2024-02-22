@@ -1,6 +1,13 @@
 package de.dominikdias.gymresttimer.activity
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.VibrationEffect.DEFAULT_AMPLITUDE
+import android.os.Vibrator
+import android.os.VibratorManager
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +41,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import de.dominikdias.database.data.Duration
 import de.dominikdias.database.viewmodel.DatabaseViewModel
 import de.dominikdias.gymresttimer.R
 import de.dominikdias.gymresttimer.application.GymRestTimerApplication
@@ -41,9 +50,13 @@ import de.dominikdias.gymresttimer.data.Screens
 import de.dominikdias.gymresttimer.ui.addtimer.AddTimer
 import de.dominikdias.gymresttimer.ui.home.Home
 import de.dominikdias.gymresttimer.ui.settings.Settings
+import de.dominikdias.gymresttimer.viewmodel.AddTimerViewModel
 import de.dominikdias.gymresttimer.viewmodel.MainActivityViewModel
 import de.dominikdias.myapplication.ui.theme.MyApplicationTheme
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
@@ -57,6 +70,15 @@ class MainActivity : ComponentActivity() {
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
     private val databaseViewModel: DatabaseViewModel by viewModels {
         DatabaseViewModel.factory((application as GymRestTimerApplication).durationRepository)
+    }
+    private val addTimerViewModel: AddTimerViewModel by viewModels()
+    private val vibrator by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager?)?.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            getSystemService(VIBRATOR_SERVICE) as Vibrator?
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +101,15 @@ class MainActivity : ComponentActivity() {
     private fun AppContent() {
         val navController = rememberNavController()
         val durationList by databaseViewModel.durationList.collectAsState()
+        LaunchedEffect(key1 = Unit) {
+            mainActivityViewModel.eventChannel.collectLatest {
+                withContext(Dispatchers.Main) {
+                    if (vibrator?.hasVibrator() == true) {
+                        vibrator?.vibrate(VibrationEffect.createOneShot(500, DEFAULT_AMPLITUDE))
+                    }
+                }
+            }
+        }
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -107,11 +138,11 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             },
-        ) {
+        ) { paddingValues ->
             NavHost(
                 navController = navController,
                 startDestination = mainActivityViewModel.currentRoute.route.name,
-                modifier = Modifier.padding(it),
+                modifier = Modifier.padding(paddingValues),
             ) {
                 composable(route = Screens.HOME.name) {
                     Home(
@@ -124,7 +155,31 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 composable(route = Screens.ADD_TIMER.name) {
-                    AddTimer()
+                    AddTimer(
+                        hourValue = addTimerViewModel.hours,
+                        minuteValue = addTimerViewModel.minutes,
+                        secondValue = addTimerViewModel.seconds,
+                        onHourValueChanged = { addTimerViewModel.hours = it },
+                        onMinutesValueChanged = { addTimerViewModel.minutes = it },
+                        onSecondsValueChanged = { addTimerViewModel.seconds = it }
+                    ) { timeToAdd ->
+                        if (timeToAdd != 0L) {
+                            Duration(timeToAdd).also { duration ->
+                                val found = durationList.find { it == duration }
+                                if (found == null) {
+                                    Toast.makeText(this@MainActivity, "Timer Added", Toast.LENGTH_SHORT).show()
+                                    databaseViewModel.insertDuration(duration)
+                                } else {
+                                    Toast.makeText(
+                                        this@MainActivity, "Timer already added before", Toast
+                                            .LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                            addTimerViewModel.reset()
+
+                        }
+                    }
                 }
                 composable(route = Screens.SETTINGS.name) {
                     Settings()

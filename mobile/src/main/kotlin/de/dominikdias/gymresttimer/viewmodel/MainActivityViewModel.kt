@@ -9,7 +9,10 @@ import androidx.lifecycle.viewModelScope
 import de.dominikdias.gymresttimer.data.ScreenNavigation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -22,6 +25,10 @@ class MainActivityViewModel : ViewModel() {
 
     private var timerJob: Job? = null
     private var remainingTime: Long = 0
+
+    private val _eventChannel = Channel<Unit>()
+    val eventChannel: Flow<Unit>
+        get() = _eventChannel.receiveAsFlow()
 
     fun setTimer(time: Long) {
         remainingTime = time
@@ -38,6 +45,7 @@ class MainActivityViewModel : ViewModel() {
                     timerText = remainingTime
                 }
             }
+            _eventChannel.send(Unit)
         }
     }
 
@@ -54,5 +62,6 @@ class MainActivityViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         timerJob?.cancel()
+        _eventChannel.close()
     }
 }

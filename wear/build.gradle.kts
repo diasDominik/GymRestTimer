@@ -20,7 +20,7 @@ android {
 
     kotlin.jvmToolchain(17)
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = "1.5.8"
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
 
     buildTypes {
         release {
