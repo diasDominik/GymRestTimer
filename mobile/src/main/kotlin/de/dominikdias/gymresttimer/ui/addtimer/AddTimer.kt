@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -23,7 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
-import de.dominikdias.myapplication.ui.theme.MyApplicationTheme
+import de.dominikdias.gymresttimer.ui.theme.MyApplicationTheme
 import kotlin.time.DurationUnit
 import kotlin.time.DurationUnit.HOURS
 import kotlin.time.DurationUnit.MINUTES
@@ -42,7 +41,7 @@ fun AddTimer(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

@@ -12,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -45,6 +46,7 @@ import de.dominikdias.database.data.Duration
 import de.dominikdias.database.viewmodel.DatabaseViewModel
 import de.dominikdias.gymresttimer.R
 import de.dominikdias.gymresttimer.application.GymRestTimerApplication
+import de.dominikdias.gymresttimer.data.AppTheme
 import de.dominikdias.gymresttimer.data.ScreenNavigation
 import de.dominikdias.gymresttimer.data.Screens
 import de.dominikdias.gymresttimer.ui.addtimer.AddTimer
@@ -52,7 +54,8 @@ import de.dominikdias.gymresttimer.ui.home.Home
 import de.dominikdias.gymresttimer.ui.settings.Settings
 import de.dominikdias.gymresttimer.viewmodel.AddTimerViewModel
 import de.dominikdias.gymresttimer.viewmodel.MainActivityViewModel
-import de.dominikdias.myapplication.ui.theme.MyApplicationTheme
+import de.dominikdias.gymresttimer.viewmodel.SettingsViewModel
+import de.dominikdias.gymresttimer.ui.theme.MyApplicationTheme
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -72,6 +75,7 @@ class MainActivity : ComponentActivity() {
         DatabaseViewModel.factory((application as GymRestTimerApplication).durationRepository)
     }
     private val addTimerViewModel: AddTimerViewModel by viewModels()
+    private val settingsViewModel: SettingsViewModel by viewModels()
     private val vibrator by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager?)?.defaultVibrator
@@ -85,7 +89,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
+            val useDarkColors = when (settingsViewModel.useSystemTheme) {
+                AppTheme.MODE_DAY -> false
+                AppTheme.MODE_NIGHT -> true
+                AppTheme.MODE_AUTO -> isSystemInDarkTheme()
+            }
+            MyApplicationTheme(darkTheme = useDarkColors) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -182,7 +191,9 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 composable(route = Screens.SETTINGS.name) {
-                    Settings()
+                    Settings(selected = settingsViewModel.useSystemTheme.name) {
+                        settingsViewModel.useSystemTheme = AppTheme.valueOf(it)
+                    }
                 }
             }
         }

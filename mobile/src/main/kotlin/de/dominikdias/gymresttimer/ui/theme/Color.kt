@@ -1,4 +1,4 @@
-package de.dominikdias.myapplication.ui.theme
+package de.dominikdias.gymresttimer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

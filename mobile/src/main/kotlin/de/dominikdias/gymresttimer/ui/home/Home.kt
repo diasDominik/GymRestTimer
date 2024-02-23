@@ -34,7 +34,7 @@ import de.dominikdias.database.data.Duration
 import de.dominikdias.extensions.Pause
 import de.dominikdias.extensions.Stop
 import de.dominikdias.extensions.formatTime
-import de.dominikdias.myapplication.ui.theme.MyApplicationTheme
+import de.dominikdias.gymresttimer.ui.theme.MyApplicationTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
