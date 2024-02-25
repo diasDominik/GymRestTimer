@@ -1,4 +1,4 @@
-package de.dominikdias.myapplication.ui.theme
+package de.dominikdias.gymresttimer.ui.theme
 
 import android.app.Activity
 import android.os.Build

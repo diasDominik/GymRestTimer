@@ -19,7 +19,7 @@ android {
 
     buildFeatures.compose = true
 
-    composeOptions.kotlinCompilerExtensionVersion = "1.5.8"
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
 
     kotlin.jvmToolchain(17)
 
@@ -41,6 +41,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.collections.immutable)
+    implementation(project(":database"))
+    implementation(project(":extensions"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
