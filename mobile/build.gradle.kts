@@ -19,9 +19,9 @@ android {
 
     buildFeatures.compose = true
 
-    composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
+    composeOptions.kotlinCompilerExtensionVersion = libs.androidx.compose.compiler.toString()
 
-    kotlin.jvmToolchain(17)
+    kotlin.jvmToolchain(libs.versions.java.jdk.get().toInt())
 
     buildTypes {
         release {
