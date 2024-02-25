@@ -1,8 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":extensions")
-
-
 pluginManagement {
     repositories {
         google {
@@ -28,3 +25,4 @@ rootProject.name = "Gym Rest Timer"
 include(":mobile")
 include(":wear")
 include(":database")
+include(":extensions")

@@ -18,7 +18,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    kotlin.jvmToolchain(17)
+    kotlin.jvmToolchain(libs.versions.java.jdk.get().toInt())
 }
 
 dependencies {
