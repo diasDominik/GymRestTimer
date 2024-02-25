@@ -20,7 +20,7 @@ android {
 
     kotlin.jvmToolchain(libs.versions.java.jdk.get().toInt())
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = libs.androidx.compose.compiler.toString()
+    composeOptions.kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
 
     buildTypes {
         release {
