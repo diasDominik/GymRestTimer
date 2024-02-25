@@ -1,11 +1,13 @@
 package de.dominikdias.gymresttimer.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.dominikdias.gymresttimer.R
 import de.dominikdias.gymresttimer.data.ScreenNavigation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,6 +24,7 @@ class MainActivityViewModel : ViewModel() {
         private set
 
     var currentRoute by mutableStateOf<ScreenNavigation>(ScreenNavigation.Home)
+    var topBarTitle by mutableIntStateOf(R.string.home)
 
     private var timerJob: Job? = null
     private var remainingTime: Long = 0

@@ -16,13 +16,11 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -31,7 +29,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -52,19 +49,17 @@ import de.dominikdias.gymresttimer.data.Screens
 import de.dominikdias.gymresttimer.ui.addtimer.AddTimer
 import de.dominikdias.gymresttimer.ui.home.Home
 import de.dominikdias.gymresttimer.ui.settings.Settings
+import de.dominikdias.gymresttimer.ui.theme.MyApplicationTheme
 import de.dominikdias.gymresttimer.viewmodel.AddTimerViewModel
 import de.dominikdias.gymresttimer.viewmodel.MainActivityViewModel
 import de.dominikdias.gymresttimer.viewmodel.SettingsViewModel
-import de.dominikdias.gymresttimer.ui.theme.MyApplicationTheme
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
-    @Stable
-    private val navigationRoute = listOf(
+    private val navigationRoute = persistentListOf(
         ScreenNavigation.Home,
         ScreenNavigation.AddTimer,
         ScreenNavigation.Settings,
@@ -112,25 +107,16 @@ class MainActivity : ComponentActivity() {
         val durationList by databaseViewModel.durationList.collectAsState()
         LaunchedEffect(key1 = Unit) {
             mainActivityViewModel.eventChannel.collectLatest {
-                withContext(Dispatchers.Main) {
-                    if (vibrator?.hasVibrator() == true) {
-                        vibrator?.vibrate(VibrationEffect.createOneShot(500, DEFAULT_AMPLITUDE))
-                    }
+                if (vibrator?.hasVibrator() == true) {
+                    vibrator?.vibrate(VibrationEffect.createOneShot(700, DEFAULT_AMPLITUDE))
                 }
             }
         }
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
-                    title = { Text(text = stringResource(id = R.string.app_name)) },
-                    navigationIcon = {
-                        IconButton(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                contentDescription = null,
-                            )
-                        }
-                    })
+                    title = { Text(text = stringResource(id = mainActivityViewModel.topBarTitle)) },
+                )
             },
             bottomBar = {
                 BottomNavigationBar(navController)
@@ -154,6 +140,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.padding(paddingValues),
             ) {
                 composable(route = Screens.HOME.name) {
+                    mainActivityViewModel.topBarTitle = R.string.home
                     Home(
                         time = mainActivityViewModel.timerText,
                         times = durationList.toImmutableList(),
@@ -164,6 +151,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 composable(route = Screens.ADD_TIMER.name) {
+                    mainActivityViewModel.topBarTitle = R.string.add_timer
                     AddTimer(
                         hourValue = addTimerViewModel.hours,
                         minuteValue = addTimerViewModel.minutes,
@@ -176,12 +164,17 @@ class MainActivity : ComponentActivity() {
                             Duration(timeToAdd).also { duration ->
                                 val found = durationList.find { it == duration }
                                 if (found == null) {
-                                    Toast.makeText(this@MainActivity, "Timer Added", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        R.string.timer_added,
+                                        Toast.LENGTH_SHORT,
+                                    ).show()
                                     databaseViewModel.insertDuration(duration)
                                 } else {
                                     Toast.makeText(
-                                        this@MainActivity, "Timer already added before", Toast
-                                            .LENGTH_SHORT
+                                        this@MainActivity,
+                                        R.string.timer_already_added,
+                                        Toast.LENGTH_SHORT,
                                     ).show()
                                 }
                             }
@@ -191,6 +184,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 composable(route = Screens.SETTINGS.name) {
+                    mainActivityViewModel.topBarTitle = R.string.settings
                     Settings(selected = settingsViewModel.useSystemTheme.name) {
                         settingsViewModel.useSystemTheme = AppTheme.valueOf(it)
                     }
