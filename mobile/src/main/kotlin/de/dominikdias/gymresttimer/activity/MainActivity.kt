@@ -216,10 +216,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
 
-@Preview
-@Composable
-private fun MainActivityPreview() {
-    MainActivity()
+    @Preview
+    @Composable
+    private fun MainActivityPreview() {
+        AppContent()
+    }
 }
