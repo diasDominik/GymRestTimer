@@ -1,6 +1,6 @@
 [versions]
 activityCompose = "1.9.1"
-agp = "8.5.1"
+agp = "8.5.2"
 androidx-room = "2.6.1"
 composeBom = "2024.06.00"
 composeCompiler = "1.5.14"
