@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -18,8 +19,6 @@ android {
     }
 
     buildFeatures.compose = true
-
-    composeOptions.kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
 
     kotlin.jvmToolchain(libs.versions.java.jdk.get().toInt())
 

@@ -1,9 +1,11 @@
 package de.dominikdias.database.data
 
+import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Keep
 data class Duration(val duration: Long)
 
 
