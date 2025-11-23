@@ -44,6 +44,7 @@
         "io.mockk"
       ],
       "groupName": "mockk"
-    }
+    },
+    { "enabled": false }
   ]
 }
